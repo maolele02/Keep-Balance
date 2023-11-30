@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum JewelType
 {
@@ -15,6 +16,7 @@ public class Jewel : MonoBehaviour
     [Range(50f, 200f)]
     [SerializeField][Header("初始降落速度")] private float downSpeed = 100f;
     [SerializeField][Header("宝石配置ID文字")] private TextMeshProUGUI cfgIDText;
+    [SerializeField][Header("宝石贴图")] private Image gemSprite;
 
     private XConfig.Jewel.Data selfConfig;
     private JewelType jewelType;
@@ -38,7 +40,10 @@ public class Jewel : MonoBehaviour
 
         this.jewelType = jewelType;
 
-        cfgIDText.text = cfgID.ToString();
+        gemSprite.sprite = Resources.Load<Sprite>("Gem/" + cfgID);
+
+        //玩家凭借宝石外观判断，不用文字
+        //cfgIDText.text = cfgID.ToString();
 
         if (rb == null)
         {

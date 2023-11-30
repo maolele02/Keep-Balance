@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3496082589480744873}
   - component: {fileID: 6300491560196077090}
   - component: {fileID: 6872901925797988249}
-  - component: {fileID: 1058924938149629196}
+  - component: {fileID: 6122341849114689981}
   - component: {fileID: 4187368273421187287}
   - component: {fileID: 6988379956581376815}
   m_Layer: 5
@@ -107,8 +107,8 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!58 &1058924938149629196
-CircleCollider2D:
+--- !u!60 &6122341849114689981
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -139,9 +139,24 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.22625732, y: -0.23703003}
-  serializedVersion: 2
-  m_Radius: 49.774895
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0, y: 1}
+      - {x: -0.95105654, y: 0.30901697}
+      - {x: -0.5877852, y: -0.80901706}
+      - {x: 0.58778536, y: -0.80901694}
+      - {x: 0.9510565, y: 0.30901712}
+  m_UseDelaunayMesh: 0
 --- !u!114 &4187368273421187287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,8 +169,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75c21f2577e083841a3c3031662546e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  downSpeed: 175
+  downSpeed: 91.2
   cfgIDText: {fileID: 1290723617114466122}
+  gemSprite: {fileID: 6300491560196077090}
 --- !u!114 &6988379956581376815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,7 +209,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1986624433811389119
 RectTransform:
   m_ObjectHideFlags: 0

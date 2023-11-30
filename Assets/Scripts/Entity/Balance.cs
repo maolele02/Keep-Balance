@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Balance : MonoSingleton<Balance>
 {
-    [SerializeField][Header("平衡时宝石消除的时间间隔")] private float removeDurationTime = 1f;
+    [SerializeField][Header("平衡时宝石消除的时间间隔")] private float removeDurationTime = 2.5f;
     private float angleUpperLimit;
     private float angleLowerLimit;
 
