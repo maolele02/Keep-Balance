@@ -9,6 +9,8 @@ public class Balance : MonoSingleton<Balance>
     private float angleUpperLimit;
     private float angleLowerLimit;
 
+    private RectTransform rectTrans;
+
     public float AngleUpperLimit
     {
         get { return angleUpperLimit;}
@@ -27,6 +29,15 @@ public class Balance : MonoSingleton<Balance>
     public void AddRangeListener(Action<float> listener)
     {
         onRangeChange = listener;
+    }
+
+    private void Start()
+    {
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        rb.constraints = RigidbodyConstraints2D.FreezePosition;
+
+        rectTrans = GetComponent<RectTransform>();
+        
     }
 
     private void Update()
@@ -52,6 +63,10 @@ public class Balance : MonoSingleton<Balance>
             angle = tempAngle;
             onRangeChange?.Invoke(angle);
         }
+
+        // 很奇怪，我Freeze Position了物体还是会因为碰撞而改变位置
+        // 这里代码强制设置位置不变
+        rectTrans.anchoredPosition = Vector2.zero;
     }
 
 
