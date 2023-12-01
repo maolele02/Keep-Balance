@@ -5,25 +5,11 @@ using UnityEngine;
 
 public class Balance : MonoSingleton<Balance>
 {
-    [SerializeField][Header("平衡时宝石消除的时间间隔")] private float removeDurationTime = 2.5f;
-    private float angleUpperLimit;
-    private float angleLowerLimit;
+    [SerializeField][Header("游戏配置")] private GameSetting gameSetting;
 
     private Rigidbody2D rb;
 
     private RectTransform rectTrans;
-
-    public float AngleUpperLimit
-    {
-        get { return angleUpperLimit;}
-        set { angleUpperLimit = value; }
-    }
-
-    public float AngleLowerLimit
-    {
-        get { return angleLowerLimit;}
-        set { angleLowerLimit = value; }
-    }
 
     private float angle;
     private Action<float> onRangeChange;
@@ -37,6 +23,7 @@ public class Balance : MonoSingleton<Balance>
     {
         rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezePosition;
+        rb.mass = gameSetting.balanceMass;
 
         rectTrans = GetComponent<RectTransform>();
         
@@ -66,8 +53,8 @@ public class Balance : MonoSingleton<Balance>
             tempAngle += 360f;
         }
 
-        tempAngle = tempAngle > angleUpperLimit ? angleUpperLimit : tempAngle;
-        tempAngle = tempAngle < angleLowerLimit ? angleLowerLimit : tempAngle;
+        tempAngle = tempAngle > gameSetting.angleUpperLimit ? gameSetting.angleUpperLimit : tempAngle;
+        tempAngle = tempAngle < -gameSetting.angleUpperLimit ? -gameSetting.angleUpperLimit : tempAngle;
 
         transform.localEulerAngles = Vector3.forward * tempAngle;
         
@@ -88,7 +75,7 @@ public class Balance : MonoSingleton<Balance>
         while (true)
         {
             JewelManager.Instance.RemoveBalanceJewels();
-            yield return new WaitForSeconds(removeDurationTime);
+            yield return new WaitForSeconds(gameSetting.removeDurationTime);
         }
     }
 

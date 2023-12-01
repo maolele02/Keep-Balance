@@ -11,4 +11,8 @@ public class GameSetting : ScriptableObject
 
     [Header("玩家宝石生成延迟")] public float playerJewelSpawnDelay = 1f;
     [Header("电脑宝石生成延迟")] public float enemyJewelSpawnDelay = 5f;
+
+    [Header("平衡时宝石消除的时间间隔")] public float removeDurationTime = 2.5f;
+
+    [Header("天平质量")] public float balanceMass = 1500f;
 }

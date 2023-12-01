@@ -2559,7 +2559,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 522d904e32543324bad25a4d4e203e66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  removeDurationTime: 1
+  gameSetting: {fileID: 11400000, guid: 82056b47cd806874b81b88cb904b36b4, type: 2}
 --- !u!61 &356240109223846261
 BoxCollider2D:
   m_ObjectHideFlags: 0

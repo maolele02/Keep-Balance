@@ -109,14 +109,12 @@ public class GamingView : UIWindow
             return;
         }
         balance.AddRangeListener(MovePointer);
-        balance.AngleLowerLimit = AngleLowerLimit;
-        balance.AngleUpperLimit = AngleUpperLimit;
         JewelManager.Instance.AddRemoveListener(
             () =>
             {
                 scoreText.text = $"Score: {PlayerDataManager.Instance.CurrentScore}";
             });
-    } 
+    }
 
     public override void OnEabled(params object[] param)
     {
