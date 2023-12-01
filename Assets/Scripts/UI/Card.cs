@@ -9,7 +9,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 {
     [Range(50f, 200f)]
     [SerializeField][Header("ÒÆ¶¯ËÙ¶È")] private float moveSpeed = 150f;
-    [SerializeField][Header("¿¨ÅÆ¼ä¾à")] private float spacing = 10f;
+    [SerializeField][Header("¿¨ÅÆ¼ä¾à")] private float spacing = 20f;
     [SerializeField][Header("¿¨ÅÆÍ¼Æ¬")] private Image cardImg; 
     [SerializeField] private int cardIndex;
 
@@ -18,9 +18,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     private float jewelSpawnDelay = 1f;
     private Vector2 beforeDragPos;
 
-    private Vector2 spawnPosition;
     private Slot slot;
-    private Transform spawnParent;
 
     private RectTransform rectTrans;
     private CanvasGroup canvasGroup;

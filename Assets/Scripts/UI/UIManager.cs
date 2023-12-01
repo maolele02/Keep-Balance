@@ -1,35 +1,35 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class UIManager
+public class UIManager: Singleton<UIManager>
 {
-    private static UIManager instance;
     public Canvas Canvas { get; private set; }
 
     private Dictionary<Type, UIWindow> views;
     
-    private UIManager() 
+    public UIManager() 
     {
         Init();
-    }
-    public static UIManager Instance
-    {
-        get
-        {
-            if(instance == null)
-            {
-                instance = new UIManager();
-            }
-            return instance;
-        }
     }
 
     private void Init()
     {
-        Canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        GameObject canvasGameObject = new GameObject("Canvas");
+
+        Canvas = canvasGameObject.AddComponent<Canvas>();
+        Canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        CanvasScaler scaler = canvasGameObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.matchWidthOrHeight = 0;
+        canvasGameObject.AddComponent<GraphicRaycaster>();
+
         views = new Dictionary<Type, UIWindow>(3);
+
+        GameObject eventSysetmGameObject = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
     }
 
     public void OpenWindow<T>(params object[] param) where T : UIWindow, new()

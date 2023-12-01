@@ -98,32 +98,13 @@ public class Balance : MonoSingleton<Balance>
         }
     }
 
-    //private void OnCollisionExit2D(Collision2D collision)
-    //{
-    //    GameObject go = collision.gameObject;
-    //    if (go.CompareTag(Tags.Jewel))
-    //    {
-    //        Jewel jewel = go.GetComponent<Jewel>();
-    //        if (jewel.JewelType == JewelType.Player)
-    //        {
-    //            if (playerJewels.ContainsKey(jewel.JewelCfgID))
-    //            {
-    //                if (playerJewels[jewel.JewelCfgID] != null)
-    //                {
-    //                    playerJewels[jewel.JewelCfgID].Remove(go);
-    //                }
-    //            }
-    //        }
-    //        else
-    //        {
-    //            if (enemyJewels.ContainsKey(jewel.JewelCfgID))
-    //            {
-    //                if (enemyJewels[jewel.JewelCfgID] != null)
-    //                {
-    //                    enemyJewels[jewel.JewelCfgID].Remove(go);
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        GameObject go = collision.gameObject;
+        if (go.CompareTag(Tags.Jewel))
+        {
+            Jewel jewel = go.GetComponent<Jewel>();
+            JewelManager.Instance.RemoveJewel(jewel.JewelType, jewel.SpawnID);
+        }
+    }
 }

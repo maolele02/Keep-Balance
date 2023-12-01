@@ -23,7 +23,7 @@ public class GameOverView : UIWindow
     public override void OnEabled(params object[] param)
     {
         base.OnEabled(param);
-
+        Time.timeScale = 0f;
         scoreText.text = "Score: " + PlayerDataManager.Instance.CurrentScore;
     }
 
@@ -45,5 +45,12 @@ public class GameOverView : UIWindow
     private void GameReset()
     {
         GameManager.Instance.GameReset();
+    }
+
+    public override void OnDisabled()
+    {
+        base.OnDisabled();
+
+        Time.timeScale = 1f;
     }
 }

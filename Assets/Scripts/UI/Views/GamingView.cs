@@ -184,6 +184,7 @@ public class GamingView : UIWindow
     private void GameOver()
     {
         StopAllCoroutines();
+        StopAllCard();
 
         UIManager.Instance.OpenWindow<GameOverView>();
     }
@@ -258,6 +259,14 @@ public class GamingView : UIWindow
 
         // ≤‚ ‘”√
         return 1;
+    }
+
+    private void StopAllCard()
+    {
+        foreach(var cardObj in cardPool.ActivedPool)
+        {
+            cardObj.GetComponent<Card>().StopMove();
+        }
     }
 
 

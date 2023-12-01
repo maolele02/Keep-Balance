@@ -15,6 +15,8 @@ MonoBehaviour:
   angleUpperLimit: 15
   cardStorageUpperLimit: 5
   outOfRangeTimeLimit: 3
-  spawnTimeSpacing: 1
+  spawnTimeSpacing: 2
   playerJewelSpawnDelay: 1
   enemyJewelSpawnDelay: 5
+  removeDurationTime: 2.5
+  balanceMass: 1500

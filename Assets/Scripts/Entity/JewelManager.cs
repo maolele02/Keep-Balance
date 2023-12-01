@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using XConfig;
 
 public class JewelManager
 {
@@ -164,6 +165,48 @@ public class JewelManager
             else
             {
                 enemyJewels.Add(jewel.JewelCfgID, new List<Jewel>() { jewel });
+            }
+        }
+    }
+
+    public void RemoveJewel(JewelType jewelType, int jewelSpawnID)
+    {
+        if(jewelType == JewelType.Player)
+        {
+            if(playerJewels.TryGetValue(jewelSpawnID, out var jewels))
+            {
+                Jewel needRemove = null;
+                foreach(var jewel in jewels)
+                {
+                    if(jewel.SpawnID == jewelSpawnID)
+                    {
+                        needRemove = jewel;
+                        break;
+                    }
+                }
+                if(needRemove != null)
+                {
+                    jewels.Remove(needRemove);
+                }
+            }
+        }
+        else
+        {
+            if (enemyJewels.TryGetValue(jewelSpawnID, out var jewels))
+            {
+                Jewel needRemove = null;
+                foreach (var jewel in jewels)
+                {
+                    if (jewel.SpawnID == jewelSpawnID)
+                    {
+                        needRemove = jewel;
+                        break;
+                    }
+                }
+                if (needRemove != null)
+                {
+                    jewels.Remove(needRemove);
+                }
             }
         }
     }
