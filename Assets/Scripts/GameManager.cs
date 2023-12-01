@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoSingleton<GameManager>
 {
     void Start()
     {
@@ -13,8 +13,14 @@ public class GameManager : MonoBehaviour
 
     private void Init()
     {
+        GameReset();
+
+    }
+
+    public void GameReset()
+    {
         PlayerDataManager.Instance.ResetCurrentScore();
         Jewel.CounterReset();
-
+        UIManager.Instance.OpenWindow<GamingView>();
     }
 }

@@ -9,6 +9,8 @@ public class Balance : MonoSingleton<Balance>
     private float angleUpperLimit;
     private float angleLowerLimit;
 
+    private Rigidbody2D rb;
+
     private RectTransform rectTrans;
 
     public float AngleUpperLimit
@@ -33,11 +35,22 @@ public class Balance : MonoSingleton<Balance>
 
     private void Start()
     {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezePosition;
 
         rectTrans = GetComponent<RectTransform>();
         
+    }
+
+    public void ResetAngle()
+    {
+        if (rb == null)
+        {
+            return;
+        }
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = 0f;
+        transform.localEulerAngles = Vector3.zero;
     }
 
     private void Update()

@@ -43,8 +43,10 @@ public class GamingView : UIWindow
     public float AngleLowerLimit => -AngleUpperLimit;
     #endregion
 
-    private void Awake()
+    public override void __Init()
     {
+        base.__Init();
+
         cardPool = new GameObjectPool();
         cardPool.Init(cardPrefab,
             (go) =>
@@ -90,10 +92,7 @@ public class GamingView : UIWindow
             }
             ,
             null);
-    } 
 
-    private void Start()
-    {
         cardContainerWidth = cardContainer.rect.width;
         outOfRangeTipCanvasGroup.alpha = 0f;
 
@@ -113,12 +112,24 @@ public class GamingView : UIWindow
         balance.AngleLowerLimit = AngleLowerLimit;
         balance.AngleUpperLimit = AngleUpperLimit;
         JewelManager.Instance.AddRemoveListener(
-            ()=>
+            () =>
             {
                 scoreText.text = $"Score: {PlayerDataManager.Instance.CurrentScore}";
             });
+    } 
 
-        StopAllCoroutines();
+    public override void OnEabled(params object[] param)
+    {
+        base.OnEabled(param);
+
+        ResetOutOfRangeProgress();
+        balance.ResetAngle();
+
+        cardPool.ReturnAll();
+        jewelPool.ReturnAll();
+
+        scoreText.text = $"Score: 0";
+
         StartCoroutine(CardComming());
         StartCoroutine(SpawnEnemyJewel());
     }
@@ -135,9 +146,8 @@ public class GamingView : UIWindow
         // 未超出角度范围且之前的outOfRangeProgress尚未还原
         else if (outOfRangeProgress.fillAmount > 0.1f)
         {
-            outOfRangeProgress.fillAmount = 0f;
-            outOfRangeTipCanvasGroup.alpha = 0f;
-            if(outOfRangeProgressCoroutine != null)
+            ResetOutOfRangeProgress();
+            if (outOfRangeProgressCoroutine != null)
             {
                 StopCoroutine(outOfRangeProgressCoroutine);
             }
@@ -152,6 +162,12 @@ public class GamingView : UIWindow
             StopCoroutine(outOfRangeProgressCoroutine);
         }
         outOfRangeProgressCoroutine = StartCoroutine(_DoOutOfRangeProgress());
+    }
+
+    private void ResetOutOfRangeProgress()
+    {
+        outOfRangeProgress.fillAmount = 0f;
+        outOfRangeTipCanvasGroup.alpha = 0f;
     }
 
     private IEnumerator _DoOutOfRangeProgress()
@@ -170,6 +186,7 @@ public class GamingView : UIWindow
     private void GameOver()
     {
         StopAllCoroutines();
+
         UIManager.Instance.OpenWindow<GameOverView>();
     }
 

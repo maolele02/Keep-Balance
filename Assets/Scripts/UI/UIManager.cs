@@ -44,7 +44,10 @@ public class UIManager
             UIWindow view = new T();
             GameObject prefab = Resources.Load<GameObject>("Prefabs/Views/" + view.PrefabName);
             GameObject go = UnityEngine.Object.Instantiate<GameObject>(prefab, Canvas.transform);
-            views.Add(type, go.GetComponent<UIWindow>());
+            UIWindow viewComponent = go.GetComponent<UIWindow>();
+            views.Add(type, viewComponent);
+            viewComponent.__Init();
+            viewComponent.OnEabled(param);
         }
     }
 
@@ -59,5 +62,17 @@ public class UIManager
             }
         }
         return null;
+    }
+
+    public void CloseWindow<T>() where T : UIWindow, new()
+    {
+        var type = typeof(T);
+        if (views.TryGetValue(type, out UIWindow win))
+        {
+            if (win.IsActive)
+            {
+                win.OnDisabled();
+            }
+        }
     }
 }

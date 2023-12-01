@@ -68,4 +68,16 @@ public class GameObjectPool
         disabledPool.Add(go);
         returnAction?.Invoke(go);
     }
+
+    public void ReturnAll()
+    {
+        for(int i = 0; i < activedPool.Count; ++i)
+        {
+            activedPool[i].SetActive(false);
+            returnAction?.Invoke(activedPool[i]);
+        }
+
+        disabledPool.AddRange(activedPool);
+        activedPool.Clear();
+    }
 }

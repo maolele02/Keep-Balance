@@ -10,7 +10,7 @@ public class UIWindow: MonoBehaviour
 
     public bool IsActive { get; protected set; }
 
-    private void Awake()
+    public virtual void __Init()
     {
         canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
