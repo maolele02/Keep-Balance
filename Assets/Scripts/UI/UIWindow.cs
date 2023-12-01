@@ -1,27 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
-public class UIWindow : MonoSingleton<UIWindow>
+public class UIWindow: MonoBehaviour
 {
+    public virtual string PrefabName { get; }
     protected CanvasGroup canvasGroup;
 
-    protected override void Awake()
-    {
-        base.Awake();
+    public bool IsActive { get; protected set; }
 
+    private void Awake()
+    {
         canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
-    public void Open()
+
+    public virtual void OnEabled(params object[] param)
     {
         canvasGroup.alpha = 1.0f;
         canvasGroup.blocksRaycasts = true;
+        IsActive = true;
     }
 
-    public void Close()
+    public virtual void OnDisabled()
     {
         canvasGroup.alpha = 0f;
         canvasGroup.blocksRaycasts = false;
+        IsActive = false;
     }
+
 }

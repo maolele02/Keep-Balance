@@ -3,30 +3,26 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using XConfig;
 
 public class GamingView : UIWindow
 {
+    #region Field
     [SerializeField][Header("指针")] private RectTransform pointer;
-    [Range(1f, 90f)]
-    [SerializeField][Header("平衡上限角度")] private float angleUpperLimit;
-    [Range(-90f, -1f)]
-    [SerializeField][Header("平衡下限角度")] private float angleLowerLimit;
     [SerializeField][Header("天平")] private Balance balance;
 
     [SerializeField][Header("卡牌容器")] private RectTransform cardContainer;
     [SerializeField][Header("卡牌预制体")] private GameObject cardPrefab;
 
 
-    [SerializeField][Header("卡牌存储上限")] private int cardStorageUpperLimit = 5;
-    [SerializeField][Header("卡牌生成时间间隔")] private float spawnTimeSpacing = 1f;
-
     [SerializeField][Header("宝石预制体")] private GameObject jewelPrefab;
-    [SerializeField][Header("玩家宝石生成延迟")] private float playerJewelSpawnDelay = 1f;
-    [SerializeField][Header("电脑宝石生成延迟")] private float enemyJewelSpawnDelay = 5f;
     [SerializeField][Header("电脑宝石生成区域")] private RectTransform enemySpawnArea;
 
     [SerializeField][Header("分数文字")] private TextMeshProUGUI scoreText;
+
+    [SerializeField][Header("越界读秒提示界面")] private CanvasGroup outOfRangeTipCanvasGroup;
+    [SerializeField][Header("越界读秒进度条")] private Image outOfRangeProgress;
+
+    [SerializeField][Header("游戏配置")] private GameSetting gameSetting;
 
     private float angleRange;
     private float blockAreaHeight;
@@ -35,15 +31,20 @@ public class GamingView : UIWindow
     private GameObjectPool cardPool;
     private GameObjectPool jewelPool;
 
+    private Coroutine outOfRangeProgressCoroutine;
+    #endregion
+
+    #region Property
+    public override string PrefabName => "GamingView";
     public GameObjectPool CardPool => cardPool;
     public GameObjectPool JewelPool => jewelPool;
 
-    public float AngleUpperLimit => angleUpperLimit;
-    public float AngleLowerLimit => angleLowerLimit;
+    public float AngleUpperLimit => gameSetting.angleUpperLimit;
+    public float AngleLowerLimit => -AngleUpperLimit;
+    #endregion
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
         cardPool = new GameObjectPool();
         cardPool.Init(cardPrefab,
             (go) =>
@@ -51,7 +52,7 @@ public class GamingView : UIWindow
                 go.transform.SetParent(cardContainer.transform, false);
                 Card card = go.GetComponent<Card>();
                 card.Show();
-                card.SetJewelSpawnDelay(playerJewelSpawnDelay);
+                card.SetJewelSpawnDelay(gameSetting.playerJewelSpawnDelay);
 
                 card.AddEndDragListener(() =>
                 {
@@ -94,8 +95,9 @@ public class GamingView : UIWindow
     private void Start()
     {
         cardContainerWidth = cardContainer.rect.width;
+        outOfRangeTipCanvasGroup.alpha = 0f;
 
-        angleRange = angleUpperLimit - angleLowerLimit;
+        angleRange = AngleUpperLimit - AngleLowerLimit;
         if (angleRange < 1f)
         {
             Debug.LogError($"angleRangle: {angleRange} error.");
@@ -108,8 +110,8 @@ public class GamingView : UIWindow
             return;
         }
         balance.AddRangeListener(MovePointer);
-        balance.AngleLowerLimit = angleLowerLimit;
-        balance.AngleUpperLimit = angleUpperLimit;
+        balance.AngleLowerLimit = AngleLowerLimit;
+        balance.AngleUpperLimit = AngleUpperLimit;
         JewelManager.Instance.AddRemoveListener(
             ()=>
             {
@@ -124,20 +126,64 @@ public class GamingView : UIWindow
     private void MovePointer(float balanceAngle)
     {
         float targetPosY = balanceAngle * blockAreaHeight / angleRange;
-        pointer.anchoredPosition = new Vector2(0f, targetPosY);
+        pointer.anchoredPosition = new Vector2(0f, targetPosY);        
+    
+        if(Mathf.Abs(balanceAngle) >= AngleUpperLimit)  // 超出角度范围
+        {
+            DoOutOfRangeProgress();
+        }
+        // 未超出角度范围且之前的outOfRangeProgress尚未还原
+        else if (outOfRangeProgress.fillAmount > 0.1f)
+        {
+            outOfRangeProgress.fillAmount = 0f;
+            outOfRangeTipCanvasGroup.alpha = 0f;
+            if(outOfRangeProgressCoroutine != null)
+            {
+                StopCoroutine(outOfRangeProgressCoroutine);
+            }
+        }
+    }
+
+    private void DoOutOfRangeProgress()
+    {
+        outOfRangeTipCanvasGroup.alpha = 1f;
+        if(outOfRangeProgressCoroutine != null)
+        {
+            StopCoroutine(outOfRangeProgressCoroutine);
+        }
+        outOfRangeProgressCoroutine = StartCoroutine(_DoOutOfRangeProgress());
+    }
+
+    private IEnumerator _DoOutOfRangeProgress()
+    {
+        float timer = 0f;
+        while(timer <= gameSetting.outOfRangeTimeLimit)
+        {
+            outOfRangeProgress.fillAmount = timer / gameSetting.outOfRangeTimeLimit;
+            yield return null;
+            timer += Time.deltaTime;
+        }
+        // outOfRangeTipCanvasGroup.alpha = 0f;
+        GameOver();
+    }
+
+    private void GameOver()
+    {
+        StopAllCoroutines();
+        UIManager.Instance.OpenWindow<GameOverView>();
     }
 
     private IEnumerator CardComming()
     {
         while(true)
         {
-            if(cardPool.ActivedCount < cardStorageUpperLimit)
+            if(cardPool.ActivedCount < gameSetting.cardStorageUpperLimit)
             {
                 GameObject card = cardPool.Get();
                 Card cardComponent = card.GetComponent<Card>();
                 cardComponent.Init(1, cardContainerWidth);
                 cardComponent.BeginMove();
-                yield return new WaitForSeconds(spawnTimeSpacing);
+                yield return new WaitForSeconds(gameSetting.spawnTimeSpacing);
             }
             else
             {
@@ -170,7 +216,7 @@ public class GamingView : UIWindow
             float shift = Random.Range(-80f, 80f);
             initalPosition.x += shift;
             jewelObj.GetComponent<RectTransform>().anchoredPosition = initalPosition;
-            yield return new WaitForSeconds(enemyJewelSpawnDelay);
+            yield return new WaitForSeconds(gameSetting.enemyJewelSpawnDelay);
         }
     }
 

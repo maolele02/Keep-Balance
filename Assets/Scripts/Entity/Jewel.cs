@@ -30,6 +30,11 @@ public class Jewel : MonoBehaviour
     public JewelType JewelType => jewelType;
     public int JewelCfgID => selfConfig.id;
 
+    public static void CounterReset()
+    {
+        spawnCount = 0;
+    }
+
     public void Init(int cfgID, JewelType jewelType)
     {
         if(!XConfig.Jewel.Items.TryGetValue(cfgID, out selfConfig))

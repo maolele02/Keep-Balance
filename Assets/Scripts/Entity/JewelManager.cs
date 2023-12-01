@@ -93,7 +93,13 @@ public class JewelManager
         int removeCount = 0;
         for (int k = 0; k < needRemoveJewels.Count; ++k)
         {
-            (GamingView.Instance as GamingView).JewelPool.Return(needRemoveJewels[k].gameObject);
+            GamingView gamingViwe = UIManager.Instance.GetActivedWindow<GamingView>();
+            if (gamingViwe == null) 
+            {
+                // Debug.LogError("GamingView have not be created.");
+                return;
+            }
+            gamingViwe.JewelPool.Return(needRemoveJewels[k].gameObject);
             ++removeCount;
         }
 
